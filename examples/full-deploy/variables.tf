@@ -149,38 +149,6 @@ variable "bastion_identity_id" {
   default = ""
 }
 
-# ----------------------------- NFS ---------------------
-
-variable "enable_nfs" {
-  type    = bool
-  default = false
-}
-
-variable "nfs_vm_name" {
-  type    = string
-  default = "nx-nfs-server"
-}
-
-variable "nfs_vm_size" {
-  type    = string
-  default = "Standard_B2ms"
-}
-
-variable "nfs_disk_size_gb" {
-  type    = number
-  default = 100
-}
-
-variable "nfs_subnet_id" {
-  type    = string
-  default = ""
-}
-
-variable "nfs_allowed_cidrs" {
-  type    = list(string)
-  default = []
-}
-
 # ----------------------------- PostgreSQL ---------------------
 
 variable "enable_postgres" {

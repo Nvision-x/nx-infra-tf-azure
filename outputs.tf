@@ -119,21 +119,6 @@ output "bastion_admin_username" {
 }
 
 ################################################################################
-# NFS VM Outputs
-################################################################################
-
-output "nfs_private_ip" {
-  description = "Private IP address of the NFS VM"
-  value       = try(azurerm_network_interface.nfs[0].private_ip_address, null)
-}
-
-output "nfs_private_key_pem" {
-  description = "SSH private key for NFS VM (only if generated)"
-  value       = var.enable_nfs && var.nfs_ssh_public_key == "" ? try(tls_private_key.nfs[0].private_key_pem, null) : null
-  sensitive   = true
-}
-
-################################################################################
 # PostgreSQL Outputs
 ################################################################################
 

@@ -88,15 +88,3 @@ resource "azurerm_key_vault_secret" "bastion_ssh_private_key" {
   depends_on = [azurerm_role_assignment.kv_secrets_officer]
 }
 
-resource "azurerm_key_vault_secret" "nfs_ssh_private_key" {
-  count        = var.create && var.enable_nfs && var.nfs_ssh_public_key == "" ? 1 : 0
-  name         = "nfs-ssh-private-key"
-  value        = tls_private_key.nfs[0].private_key_pem
-  key_vault_id = azurerm_key_vault.this[0].id
-
-  tags = {
-    service = "nfs"
-  }
-
-  depends_on = [azurerm_role_assignment.kv_secrets_officer]
-}

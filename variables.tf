@@ -313,58 +313,6 @@ variable "bastion_identity_id" {
 }
 
 ################################################################################
-# NFS VM
-################################################################################
-
-variable "enable_nfs" {
-  description = "Enable NFS VM for persistent file storage"
-  type        = bool
-  default     = false
-}
-
-variable "nfs_vm_name" {
-  description = "Name for the NFS VM"
-  type        = string
-  default     = "nx-nfs-server"
-}
-
-variable "nfs_vm_size" {
-  description = "VM size for NFS server"
-  type        = string
-  default     = "Standard_B2ms"
-}
-
-variable "nfs_disk_size_gb" {
-  description = "OS disk size in GB for NFS server"
-  type        = number
-  default     = 100
-}
-
-variable "nfs_subnet_id" {
-  description = "Subnet ID for the NFS VM (private subnet)"
-  type        = string
-  default     = ""
-}
-
-variable "nfs_admin_username" {
-  description = "Admin username for the NFS VM"
-  type        = string
-  default     = "azureuser"
-}
-
-variable "nfs_ssh_public_key" {
-  description = "Existing SSH public key for NFS VM (if empty, a key pair is generated)"
-  type        = string
-  default     = ""
-}
-
-variable "nfs_allowed_cidrs" {
-  description = "CIDR blocks allowed to access the NFS VM (SSH + NFS ports)"
-  type        = list(string)
-  default     = []
-}
-
-################################################################################
 # PostgreSQL Flexible Server
 ################################################################################
 

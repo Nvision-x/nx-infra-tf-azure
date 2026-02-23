@@ -20,10 +20,6 @@ bastion_subnet_id         = ""
 bastion_allowed_ssh_cidrs = []
 bastion_identity_id       = ""
 
-# NFS
-enable_nfs    = false
-nfs_subnet_id = ""
-
 # PostgreSQL
 enable_postgres              = true
 postgres_server_name         = "nx-pg-dev"

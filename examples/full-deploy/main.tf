@@ -51,15 +51,6 @@ module "nx" {
   ai_search_name     = var.ai_search_name
   ai_search_sku      = var.ai_search_sku
 
-  # --------------------- NFS ---------------------
-
-  enable_nfs       = var.enable_nfs
-  nfs_vm_name      = var.nfs_vm_name
-  nfs_vm_size      = var.nfs_vm_size
-  nfs_disk_size_gb = var.nfs_disk_size_gb
-  nfs_subnet_id    = var.nfs_subnet_id
-  nfs_allowed_cidrs = var.nfs_allowed_cidrs
-
   # --------------------- Bastion ---------------------
 
   enable_bastion            = var.enable_bastion
