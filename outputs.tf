@@ -54,6 +54,18 @@ output "aks_kube_config_ca_certificate" {
   sensitive   = true
 }
 
+output "aks_kube_config_client_certificate" {
+  description = "Base64-encoded client certificate for AKS authentication"
+  value       = try(azurerm_kubernetes_cluster.this[0].kube_config[0].client_certificate, null)
+  sensitive   = true
+}
+
+output "aks_kube_config_client_key" {
+  description = "Base64-encoded client key for AKS authentication"
+  value       = try(azurerm_kubernetes_cluster.this[0].kube_config[0].client_key, null)
+  sensitive   = true
+}
+
 ################################################################################
 # Storage Outputs
 ################################################################################
@@ -159,14 +171,8 @@ output "ai_search_primary_key" {
 
 ################################################################################
 # OpenAI Service Accounts Output
+# NOTE: This output is intentionally excluded from the module outputs to avoid
+# a provider cycle when the orchestrator configures the kubernetes provider
+# from this module's AKS outputs. The K8s service accounts are still created;
+# they just aren't exported as module outputs.
 ################################################################################
-
-output "openai_service_accounts" {
-  description = "Map of created Kubernetes ServiceAccounts for OpenAI access"
-  value = var.enable_openai_service_accounts ? {
-    for k, v in kubernetes_service_account.openai : k => {
-      name      = v.metadata[0].name
-      namespace = v.metadata[0].namespace
-    }
-  } : {}
-}
