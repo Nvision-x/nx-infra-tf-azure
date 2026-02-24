@@ -17,8 +17,9 @@ resource "azurerm_postgresql_flexible_server" "this" {
   storage_mb = var.postgres_storage_mb
 
   # Private access via delegated subnet (equivalent to RDS subnet group)
-  delegated_subnet_id = var.postgres_delegated_subnet_id != "" ? var.postgres_delegated_subnet_id : null
-  private_dns_zone_id = var.postgres_private_dns_zone_id != "" ? var.postgres_private_dns_zone_id : null
+  delegated_subnet_id           = var.postgres_delegated_subnet_id != "" ? var.postgres_delegated_subnet_id : null
+  private_dns_zone_id           = var.postgres_private_dns_zone_id != "" ? var.postgres_private_dns_zone_id : null
+  public_network_access_enabled = var.postgres_delegated_subnet_id != "" ? false : true
 
   # Backup
   backup_retention_days        = var.postgres_backup_retention_days
