@@ -11,6 +11,7 @@ resource "azurerm_kubernetes_cluster" "this" {
   dns_prefix          = var.cluster_name
   kubernetes_version  = var.kubernetes_version
   sku_tier            = var.sku_tier
+  support_plan        = var.support_plan
 
   # User-assigned identity from nx-iam-tf-azure
   identity {

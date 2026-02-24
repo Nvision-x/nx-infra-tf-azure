@@ -107,9 +107,15 @@ variable "api_server_authorized_ip_ranges" {
 }
 
 variable "sku_tier" {
-  description = "AKS SKU tier: Free or Standard"
+  description = "AKS SKU tier: Free, Standard, or Premium"
   type        = string
   default     = "Free"
+}
+
+variable "support_plan" {
+  description = "AKS support plan: KubernetesOfficial or AKSLongTermSupport"
+  type        = string
+  default     = "KubernetesOfficial"
 }
 
 variable "automatic_upgrade_channel" {
