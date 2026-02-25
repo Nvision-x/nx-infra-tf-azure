@@ -145,6 +145,18 @@ resource "kubernetes_config_map" "infra_config" {
       AI_SEARCH_ENDPOINT = local.ai_search_endpoint
     } : k => v if v != null },
 
+    # Elastic Cloud config (only when endpoint provided)
+    { for k, v in {
+      ELASTICSEARCH_HOST       = var.elasticsearch_endpoint
+      ELASTICSEARCH_PORT       = "443"
+      ELASTICSEARCH_USE_SSL    = "true"
+      ELASTICSEARCH_SECURED    = "true"
+      ELASTICSEARCH_VERIFY_CERTS = "true"
+      ELASTICSEARCH_USE_OPENSEARCH = "true"
+      ELASTICSEARCH_USERNAME   = var.elasticsearch_username
+      OPENSEARCH_URL           = var.elasticsearch_endpoint
+    } : k => v if var.elasticsearch_endpoint != "" },
+
     # Ingress settings
     var.ingress_type != null ? { ingress-type = var.ingress_type } : {},
     var.ingress_host != null ? { ingress-host = var.ingress_host } : {},
@@ -159,7 +171,7 @@ resource "kubernetes_config_map" "infra_config" {
 ################################################################################
 
 resource "kubernetes_secret" "infra_secrets" {
-  count = var.create && var.enable_postgres ? 1 : 0
+  count = var.create && (var.enable_postgres || var.elasticsearch_password != "") ? 1 : 0
 
   metadata {
     name      = "infra-secrets"
@@ -171,6 +183,9 @@ resource "kubernetes_secret" "infra_secrets" {
     },
     var.enable_ai_search ? {
       AI_SEARCH_ADMIN_KEY = azurerm_search_service.this[0].primary_key
+    } : {},
+    var.elasticsearch_password != "" ? {
+      ELASTICSEARCH_PASSWORD = var.elasticsearch_password
     } : {}
   )
   type = "Opaque"

@@ -466,6 +466,29 @@ variable "ai_search_public_access" {
 }
 
 ################################################################################
+# Elastic Cloud (Elasticsearch)
+################################################################################
+
+variable "elasticsearch_endpoint" {
+  description = "Elastic Cloud Elasticsearch endpoint URL"
+  type        = string
+  default     = ""
+}
+
+variable "elasticsearch_username" {
+  description = "Elastic Cloud username"
+  type        = string
+  default     = ""
+}
+
+variable "elasticsearch_password" {
+  description = "Elastic Cloud password"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+################################################################################
 # Azure OpenAI Service Accounts (Bedrock equivalent)
 ################################################################################
 
