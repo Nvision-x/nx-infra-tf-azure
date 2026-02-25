@@ -112,8 +112,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "additional" {
 locals {
   pg_host     = var.enable_postgres && var.create ? azurerm_postgresql_flexible_server.this[0].fqdn : null
   pg_username = var.enable_postgres ? var.postgres_admin_username : null
-
-  ai_search_endpoint = var.enable_ai_search && var.create ? "https://${azurerm_search_service.this[0].name}.search.windows.net" : null
 }
 
 resource "kubernetes_config_map" "infra_config" {
@@ -126,12 +124,12 @@ resource "kubernetes_config_map" "infra_config" {
 
   data = merge(
     {
-      STORAGE_ACCOUNT_NAME = azurerm_storage_account.this[0].name
-      STORAGE_CONTAINER_LOGS        = "logs"
-      STORAGE_CONTAINER_MINIO       = "minio"
-      STORAGE_CONTAINER_COMPANYLOGO = "companylogo"
-      STORAGE_CONTAINER_CSVFILES    = "csvfiles"
-      STORAGE_CONTAINER_APPLOGO     = "applogo"
+      # Storage (same keys as AWS S3 buckets)
+      S3_BUCKET                     = azurerm_storage_account.this[0].name
+      MINIO_BUCKET                  = "minio"
+      MINIO_LOGO_BUCKET             = "companylogo"
+      MINIO_CSV_BUCKET              = "csvfiles"
+      MINIO_APPLICATION_LOGO_BUCKET = "applogo"
     },
 
     # PostgreSQL config (only when enabled)
@@ -140,27 +138,17 @@ resource "kubernetes_config_map" "infra_config" {
       POSTGRES_USERNAME = local.pg_username
     } : k => v if v != null },
 
-    # AI Search config (only when enabled)
+    # OpenSearch / Elastic Cloud config (same keys as AWS OpenSearch)
     { for k, v in {
-      AI_SEARCH_ENDPOINT = local.ai_search_endpoint
-    } : k => v if v != null },
-
-    # Elastic Cloud config (only when endpoint provided)
-    { for k, v in {
-      ELASTICSEARCH_HOST       = var.elasticsearch_endpoint
-      ELASTICSEARCH_PORT       = "443"
-      ELASTICSEARCH_USE_SSL    = "true"
-      ELASTICSEARCH_SECURED    = "true"
-      ELASTICSEARCH_VERIFY_CERTS = "true"
-      ELASTICSEARCH_USE_OPENSEARCH = "true"
-      ELASTICSEARCH_USERNAME   = var.elasticsearch_username
-      OPENSEARCH_URL           = var.elasticsearch_endpoint
-    } : k => v if var.elasticsearch_endpoint != "" },
+      OPENSEARCH_HOST     = var.elasticsearch_endpoint
+      OPENSEARCH_USERNAME = var.elasticsearch_username
+    } : k => v if v != null && v != "" },
 
     # Ingress settings
-    var.ingress_type != null ? { ingress-type = var.ingress_type } : {},
+    var.ingress_type != null ? { ingress-internet-facing = var.ingress_type } : {},
     var.ingress_host != null ? { ingress-host = var.ingress_host } : {},
-    { azure-region = var.location }
+    { snapshot-repository-name = "os-backup" },
+    { aws-region = var.location }
   )
 
   depends_on = [azurerm_kubernetes_cluster.this]
@@ -181,11 +169,8 @@ resource "kubernetes_secret" "infra_secrets" {
     {
       POSTGRES_PASSWORD = local.postgres_password
     },
-    var.enable_ai_search ? {
-      AI_SEARCH_ADMIN_KEY = azurerm_search_service.this[0].primary_key
-    } : {},
     var.elasticsearch_password != "" ? {
-      ELASTICSEARCH_PASSWORD = var.elasticsearch_password
+      OPENSEARCH_PASSWORD = var.elasticsearch_password
     } : {}
   )
   type = "Opaque"
