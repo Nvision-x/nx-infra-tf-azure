@@ -39,30 +39,30 @@ output "aks_node_resource_group_id" {
 
 output "aks_kube_config_raw" {
   description = "Raw kubeconfig for the AKS cluster"
-  value       = try(azurerm_kubernetes_cluster.this[0].kube_config_raw, null)
+  value       = try(azurerm_kubernetes_cluster.this[0].kube_admin_config_raw, null)
   sensitive   = true
 }
 
 output "aks_kube_config_host" {
   description = "Kubernetes API server host"
-  value       = try(azurerm_kubernetes_cluster.this[0].kube_config[0].host, null)
+  value       = try(azurerm_kubernetes_cluster.this[0].kube_admin_config[0].host, null)
 }
 
 output "aks_kube_config_ca_certificate" {
   description = "Base64-encoded CA certificate for the AKS cluster"
-  value       = try(azurerm_kubernetes_cluster.this[0].kube_config[0].cluster_ca_certificate, null)
+  value       = try(azurerm_kubernetes_cluster.this[0].kube_admin_config[0].cluster_ca_certificate, null)
   sensitive   = true
 }
 
 output "aks_kube_config_client_certificate" {
   description = "Base64-encoded client certificate for AKS authentication"
-  value       = try(azurerm_kubernetes_cluster.this[0].kube_config[0].client_certificate, null)
+  value       = try(azurerm_kubernetes_cluster.this[0].kube_admin_config[0].client_certificate, null)
   sensitive   = true
 }
 
 output "aks_kube_config_client_key" {
   description = "Base64-encoded client key for AKS authentication"
-  value       = try(azurerm_kubernetes_cluster.this[0].kube_config[0].client_key, null)
+  value       = try(azurerm_kubernetes_cluster.this[0].kube_admin_config[0].client_key, null)
   sensitive   = true
 }
 
