@@ -94,6 +94,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "additional" {
   max_count             = each.value.enable_auto_scaling ? each.value.max_count : null
   auto_scaling_enabled  = each.value.enable_auto_scaling
   os_disk_size_gb       = each.value.os_disk_size_gb
+  os_disk_type          = each.value.os_disk_type
   vnet_subnet_id        = each.value.subnet_id != "" ? each.value.subnet_id : var.default_node_pool_subnet_id
   zones                 = each.value.zones
   node_labels           = each.value.node_labels
@@ -167,7 +168,8 @@ resource "kubernetes_secret" "infra_secrets" {
   }
   data = merge(
     {
-      POSTGRES_PASSWORD = local.postgres_password
+      POSTGRES_PASSWORD  = local.postgres_password
+      STORAGE_ACCOUNT_KEY = azurerm_storage_account.this[0].primary_access_key
     },
     var.elasticsearch_password != "" ? {
       OPENSEARCH_PASSWORD = var.elasticsearch_password

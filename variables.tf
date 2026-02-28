@@ -234,6 +234,7 @@ variable "additional_node_pools" {
     max_count           = optional(number, 3)
     enable_auto_scaling = optional(bool, true)
     os_disk_size_gb     = optional(number, 50)
+    os_disk_type        = optional(string, "Managed")
     zones               = optional(list(string), ["1", "2", "3"])
     subnet_id           = optional(string, "")
     node_labels         = optional(map(string), {})
@@ -251,7 +252,7 @@ variable "additional_node_pools" {
 variable "storage_containers" {
   description = "List of blob container names to create"
   type        = list(string)
-  default     = ["logs", "minio", "companylogo", "csvfiles", "applogo", "os-backup", "postgres-backup"]
+  default     = ["logs", "minio", "companylogo", "csvfiles", "applogo", "os-backup", "postgres-backup", "observability-logs"]
 }
 
 variable "storage_lifecycle_days" {
